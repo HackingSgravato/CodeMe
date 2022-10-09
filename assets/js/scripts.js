@@ -32,10 +32,12 @@ function select_all(){
 
 function copy_all(){
     set_clipboard(editor.getValue());
+    editor.focus();
 }
 
 function copy_selected(){
     set_clipboard(editor.getSelection());
+    editor.focus();
 }
 
 function set_clipboard(text) {
@@ -44,6 +46,7 @@ function set_clipboard(text) {
         return;
     }
     navigator.clipboard.writeText(text);
+    editor.focus();
 }
 
 function fallback_set_clipboard(text) {
@@ -128,12 +131,19 @@ let last_selected_file_name = '';
 let last_selected_file_content = '';
 let editor;
 
+function tab(){
+    editor.execCommand('indentMore');
+    editor.focus();
+}
+
 function undo(){
     editor.execCommand('undo');
+    editor.focus();
 }
 
 function redo(){
     editor.execCommand('redo');
+    editor.focus();
 }
 
 function save_new_file(){
