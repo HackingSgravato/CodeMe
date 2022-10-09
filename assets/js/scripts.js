@@ -24,22 +24,7 @@ for (const toggler of modal_togglers) {
 }
 //#endregion
 
-//#region clipboard apis and functions (https://deanmarktaylor.github.io/clipboard-test/)
-function select_all(){
-    editor.execCommand('selectAll');
-    editor.focus();
-}
-
-function copy_all(){
-    set_clipboard(editor.getValue());
-    editor.focus();
-}
-
-function copy_selected(){
-    set_clipboard(editor.getSelection());
-    editor.focus();
-}
-
+//#region clipboard apis (https://deanmarktaylor.github.io/clipboard-test/)
 function set_clipboard(text) {
     if (!navigator.clipboard) {
         fallback_set_clipboard(text);
@@ -126,10 +111,28 @@ function close_modal(sender){
 }
 //#endregion
 
-//#region file functions
+//#region editor variables
 let last_selected_file_name = '';
 let last_selected_file_content = '';
 let editor;
+//#endregion
+
+//#region editor commands
+function select_all(){
+    editor.execCommand('selectAll');
+    editor.focus();
+}
+
+function copy_all(){
+    set_clipboard(editor.getValue());
+    editor.focus();
+}
+
+function copy_selected(){
+    set_clipboard(editor.getSelection());
+    editor.focus();
+}
+
 
 function tab(){
     editor.execCommand('indentMore');
@@ -145,7 +148,9 @@ function redo(){
     editor.execCommand('redo');
     editor.focus();
 }
+//#endregion
 
+//#region file functions
 function save_new_file(){
     const file_name = document.getElementById('new-file-text-input').value;
     const file_content = editor.getValue() ?? '';
