@@ -118,6 +118,25 @@ let editor;
 //#endregion
 
 //#region editor commands
+function download_current_file(){
+    const data = editor.getValue();
+    const file_name = 'file.txt';
+    const file = new Blob([data], {type: 'text/plain'});
+
+    const a = document.createElement('a');
+    const url = URL.createObjectURL(file);
+
+    a.href = url;
+    a.download = file_name;
+
+    document.body.appendChild(a);
+
+    a.click();
+    
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
 function select_all(){
     editor.execCommand('selectAll');
     editor.focus();
