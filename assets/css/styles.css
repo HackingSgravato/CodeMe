@@ -1,0 +1,12 @@
+.dropdown-item.active, .dropdown-item:active {
+  color: var(--bs-dropdown-link-active-color);
+  text-decoration: none;
+  background-color: var(--bs-gray-600);
+}
+
+@media (min-width: 992px) {
+  .toolbar {
+    padding-left: 3px;
+  }
+}
+

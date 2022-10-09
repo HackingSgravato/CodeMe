@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>CodeMe</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/node_modules/codemirror-multi/lib/codemirror.css">
+    <link rel="stylesheet" href="assets/node_modules/codemirror-multi/theme/dracula.css">
+    <link rel="stylesheet" href="assets/node_modules/codemirror-multi/addon/search/matchesonscrollbar.css">
+    <link rel="stylesheet" href="assets/node_modules/codemirror-multi/addon/scroll/simplescrollbars.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body style="background-color: var(--bs-gray-800);">
+    <div class="d-flex justify-content-center justify-content-lg-start toolbar" style="max-height: 38px;min-height: 38px;padding-top: 3px;padding-bottom: 3px;background-color: var(--bs-gray-900);">
+        <div class="dropdown" style="margin-right: 3px;"><button class="btn btn-dark btn-sm" aria-expanded="false" data-bs-toggle="dropdown" type="button">File</button>
+            <div class="dropdown-menu dropdown-menu-dark"><a class="dropdown-item" href="#" name="new-file-modal">New File...</a><a class="dropdown-item" href="#" name="select-file-modal">Select File...</a>
+                <hr class="dropdown-divider"><a class="dropdown-item" href="#" name="clear-files-modal">Clear Files</a>
+                <hr class="dropdown-divider"><a class="dropdown-item" href="#" name="save-file-modal">Save</a><a class="dropdown-item" href="#" name="save-new-file-modal">Save As...</a>
+            </div>
+        </div>
+        <div class="dropdown" style="margin-right: 3px;"><button class="btn btn-dark btn-sm" aria-expanded="false" data-bs-toggle="dropdown" type="button">Edit</button>
+            <div class="dropdown-menu dropdown-menu-dark"><a class="dropdown-item" href="#" onclick="select_all();">Select All</a>
+                <hr class="dropdown-divider"><a class="dropdown-item" href="#" onclick="copy_all();">Copy All</a><a class="dropdown-item" href="#" onclick="copy_selected();">Copy Selected</a>
+                <hr class="dropdown-divider"><a class="dropdown-item" href="#" onclick="undo();">Undo</a><a class="dropdown-item" href="#" onclick="redo();">Redo</a>
+            </div>
+        </div>
+        <div class="dropdown" style="margin-right: 3px;"><button class="btn btn-dark btn-sm" aria-expanded="false" data-bs-toggle="dropdown" type="button">About</button>
+            <div class="dropdown-menu dropdown-menu-dark"><a class="dropdown-item" href="https://github.com/hackingsgravato" target="_blank">GitHub</a><a class="dropdown-item" href="#" name="readme-modal">README</a></div>
+        </div>
+    </div>
+    <div style="position: absolute;height: calc(100% - 38px);width: 100%;padding-left: 0;"><textarea id="textarea" style="display: none;"></textarea></div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="new-file-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Creating new file...</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure?</p>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-primary worker" type="button" onclick="create_editor(); close_modal(this);">Create</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="select-file-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Select one file...</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-primary worker" type="button" onclick="open_selected_file(); close_modal(this);">Open</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="save-file-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Updating file content...</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Continuing will replace the last backup of this file with the current code. Are you sure?</p>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-primary" type="button" onclick="save_file(); close_modal(this); reload_page();">Continue</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="save-new-file-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Save file</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Choose a name and click save</p><input class="border rounded border-1 border-info shadow-sm" type="text" id="new-file-text-input" style="width: 100%;padding-left: 10px;" autofocus="" placeholder="Name">
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-primary worker" type="button" onclick="save_new_file(); close_modal(this); reload_page();">Save</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="readme-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">README</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This is not intended to replace ides such as visual studio code or even visual studio 2022 :) but it's made to use it mainly on mobile devices when you want to save some code but you're not at home.&nbsp;</p>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="clear-files-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Removing all saved files...</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>The page is going to reload after this operation. Are you sure?</p>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-primary" type="button" onclick="clear_storage(); close_modal(this); reload_page();">Continue</button></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/node_modules/codemirror-multi/lib/codemirror.js"></script>
+    <script src="assets/node_modules/codemirror-multi/addon/selection/active-line.js"></script>
+    <script src="assets/node_modules/codemirror-multi/addon/edit/closebrackets.js"></script>
+    <script src="assets/node_modules/codemirror-multi/addon/scroll/simplescrollbars.js"></script>
+    <script src="assets/node_modules/codemirror-multi/keymap/sublime.js"></script>
+    <script src="assets/js/scripts.js"></script>
+</body>
+
+</html>
